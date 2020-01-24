@@ -1,12 +1,10 @@
 package ru.azat.counter;
 
 
+import ru.azat.counter.model.Counter;
 import ru.azat.counter.repository.CounterRepository;
 import ru.azat.counter.repository.CounterRepositoryImpl;
-import ru.azat.counter.service.CounterService;
-import ru.azat.counter.service.CounterServiceImpl;
-import ru.azat.counter.service.DaoService;
-import ru.azat.counter.service.DaoServiceImpl;
+import ru.azat.counter.service.*;
 import ru.azat.counter.util.PropertiesUtil;
 
 import javax.servlet.ServletException;
@@ -33,7 +31,7 @@ public class CounterServlet extends HttpServlet {
 
         DaoService daoService = new DaoServiceImpl(databaseProperties);
         counterRepository = new CounterRepositoryImpl(daoService);
-        counterService = new CounterServiceImpl(counterRepository);
+        counterService = new SynchronizedCounterServiceImpl(counterRepository);
     }
 
     @Override
@@ -43,6 +41,8 @@ public class CounterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Counter counter = counterService.incrementCounter(1L);
+        request.setAttribute("counter", counter);
         request.getRequestDispatcher("counter.jsp").forward(request, response);
     }
 }

@@ -18,6 +18,5 @@ public class Counter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "counter")
-    private List<Score> scoreList;
+    private Long value;
 }
